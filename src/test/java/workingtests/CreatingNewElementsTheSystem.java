@@ -19,7 +19,8 @@ public class CreatingNewElementsTheSystem extends BaseConfig {
     private static String userLogin = "admin",
             userPassword = "admin",
             nameBriefcase = "Тестовый портфель",
-            nameProject = "Первый проект";
+            nameProject = "Первый проект",
+            nameTask = "Новая_задача";
 
 
     @Tags({@Tag("HIGHEST"), @Tag("UI_TEST")})
@@ -74,7 +75,7 @@ public class CreatingNewElementsTheSystem extends BaseConfig {
 
 
     @Tags({@Tag("HIGHEST"), @Tag("UI_TEST")})
-    @DisplayName("Создать в системе новую задачу в составе проекта")
+    @DisplayName("Создать в системе новую задачу в составе проекта - Первый проект")
     @Test
     void createNewTask() {
 
@@ -82,12 +83,24 @@ public class CreatingNewElementsTheSystem extends BaseConfig {
         $(".auth-page__login-form").shouldHave(text("Вход"));
         $("[name=username]").setValue(userLogin);
         $("[name=password]").setValue(userPassword).pressEnter();
-        $("header").shouldHave(text("Проекты"));
+        $("app-header").shouldHave(text("Проекты"), Duration.ofSeconds(5));
+        $(".gantt_grid").$(byText(nameProject)).click();
+        $(".sidebar-opened").shouldBe(visible).shouldHave(text(nameProject));
+        $(".g-icons__add-task_white_bg").click();
+        $(".modal-task").shouldBe(visible);
+        $("#name").setValue(nameTask);
+        $("[formcontrolname=status]").click();
+        $(".ng-dropdown-panel-items").$(byText("В проработке")).click();
+        $("[formcontrolname=task_manager]").click();
+        $(".ng-dropdown-panel-items").$(byText("Администратор")).click();
+        $("[for=need_plan]").click();
+        $("[label=Сохранить]").shouldBe(enabled).click();
+        $(".sidebar-opened").shouldBe(visible).shouldHave(text(nameTask));
 
     }
 
     @Tags({@Tag("LOW"), @Tag("UI_TEST")})
-    @DisplayName("Перейти в раздел Сотрудники")
+    @DisplayName("Перейти в раздел Сотрудники и открыть карточку пользователя Администратор")
     @Test
     void moveEmployeesSection() {
 
@@ -95,8 +108,10 @@ public class CreatingNewElementsTheSystem extends BaseConfig {
         $(".auth-page__login-form").shouldHave(text("Вход"));
         $("[name=username]").setValue(userLogin);
         $("[name=password]").setValue(userPassword).pressEnter();
-        $("header").shouldHave(text("Проекты"));
-
+        $("app-header").shouldHave(text("Проекты"), Duration.ofSeconds(5));
+        $("nav").$(byText("Сотрудники")).click();
+        $(".share-layout__header").shouldHave(text("Сотрудники"));
+        $(".table-body").$(byText("Администратор")).click();
     }
 
     @Tags({@Tag("MEDIUM"), @Tag("UI_TEST")})
